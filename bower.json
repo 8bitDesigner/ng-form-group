@@ -1,0 +1,33 @@
+{
+  "name": "ng-form-group",
+  "main": "index.min.js",
+  "version": "1.0.0",
+  "authors": [
+    "Paul Sweeney <paul@fullscreen.net>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src",
+    "test",
+    "tests",
+    "gulpfile.js",
+    "karma.conf.js",
+    "karma.watch.js"
+  ],
+  "devDependencies": {
+    "angular-mocks": "~1.2.0"
+  },
+  "dependencies": {
+    "angular": "~1.2.0",
+    "jquery": "*"
+  },
+  "resolutions": {
+    "angular": "~1.2.0"
+  }
+}
