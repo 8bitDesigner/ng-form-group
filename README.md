@@ -17,6 +17,19 @@ And lastly, in your Angular module, include `ng-form-group` as a dependency:
 angular.module('my-app', ['ng-form-group')
 ```
 
+## Usage
+
+Just mark up your form as [recommended by Bootstrap](http://getbootstrap.com/css/#forms-example) and any fields with the class `form-group` will be automatically validated!
+
+``` html
+<form role="form">
+  <div class="form-group">
+    <label for="myEmail">Email address</label>
+    <input ng-model="myEmailModel" class="form-control" id="myEmail">
+  </div>
+</form>
+```
+
 ## Contributing
 
 To get your dev environment up and running, run `npm install` and `bower install`
