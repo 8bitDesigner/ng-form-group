@@ -9,8 +9,8 @@ controls are valid or invalid.
   angular.module('ng-form-group', []).directive("formGroup", function() {
     return {
       restrict: 'C',
-      link: function(scope, el) {
-        var inputs, isConfigured, isDirty, isValid;
+      link: function(scope, el, attrs) {
+        var inputs, isConfigured, isDirty, isFocused, isValid, updateClasses;
         isConfigured = false;
         inputs = function() {
           return el.find(".form-control").toArray();
@@ -21,20 +21,11 @@ controls are valid or invalid.
         isDirty = function(input) {
           return input.classList.contains('ng-dirty');
         };
-        if (el.hasClass('has-success') || el.hasClass('has-error')) {
-          isConfigured = true;
-        }
-        return scope.$watch(function() {
-          return inputs().map(function(el) {
-            return el.className;
-          }).join(" ");
-        }, function(newval, oldval) {
-          var myInputs;
-          myInputs = inputs();
+        isFocused = function(input) {
+          return angular.element(input).is(':focus');
+        };
+        updateClasses = function(myInputs) {
           if (myInputs.length === 0) {
-            return;
-          }
-          if ((newval === oldval) && isConfigured) {
             return;
           }
           el.removeClass('has-error has-success');
@@ -45,6 +36,22 @@ controls are valid or invalid.
             return el.addClass("has-success");
           } else {
             return el.addClass("has-error");
+          }
+        };
+        el.on('blur', '.form-control', function() {
+          return updateClasses(inputs());
+        });
+        return scope.$watch(function() {
+          return inputs().map(function(el) {
+            return el.className;
+          }).join(" ");
+        }, function(newval, oldval) {
+          var myInputs;
+          myInputs = inputs();
+          if (myInputs.some(isFocused)) {
+
+          } else {
+            return updateClasses(myInputs);
           }
         });
       }

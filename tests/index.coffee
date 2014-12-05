@@ -3,10 +3,10 @@ describe 'The classy form-group directive', ->
     module('ng-form-group')
 
   factory = (inner, otherClasses = '') ->
-    console.log('inner html is ', inner, otherClasses)
     el = undefined
     inject ($compile, $rootScope) ->
       el = $compile("<div id='foo' class='form-group #{otherClasses}'>#{inner}</div>")($rootScope)
+      el.find('.form-control').trigger('blur')
       $rootScope.$digest()
     return el
 
@@ -75,28 +75,6 @@ describe 'The classy form-group directive', ->
 
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(true)
-
-  it "shouldn't update state if the element already has error or success classes", ->
-    success = factory('<input class="form-control ng-dirty ng-invalid">', 'has-success')
-    expect(success.hasClass('has-error')).toBe(false)
-    expect(success.hasClass('has-success')).toBe(true)
-
-    failure = factory('<input class="form-control ng-dirty ng-valid">', 'has-error')
-    expect(failure.hasClass('has-error')).toBe(true)
-    expect(failure.hasClass('has-success')).toBe(false)
-
-  it "should update state if an element with error or success classes is updated", ->
-    success = factory('<input class="form-control ng-dirty ng-invalid">', 'has-success')
-    success.find('input').addClass('foo')
-    success.scope().$digest()
-    expect(success.hasClass('has-error')).toBe(true)
-    expect(success.hasClass('has-success')).toBe(false)
-
-    failure = factory('<input class="form-control ng-dirty ng-valid">', 'has-error')
-    failure.find('input').addClass('foo')
-    failure.scope().$digest()
-    expect(failure.hasClass('has-error')).toBe(false)
-    expect(failure.hasClass('has-success')).toBe(true)
 
   it "shouldn't consider empty form groups valid", ->
     el = factory('')
