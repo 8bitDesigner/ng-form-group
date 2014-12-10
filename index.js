@@ -76,11 +76,17 @@
 }).call(this);
 
 (function() {
+  var toArray;
+
+  toArray = function(arrayish) {
+    return Array.prototype.slice.call(arrayish);
+  };
+
   angular.module("ng-form-group").directive("hasFeedback", function() {
     return {
       restrict: "C",
       compile: function(el, attrs) {
-        return el.find(".form-control").each(function(i, input) {
+        return toArray(el[0].querySelectorAll(".form-control")).forEach(function(input) {
           return input.setAttribute("has-feedback-watcher", "");
         });
       }
@@ -102,7 +108,9 @@
           if (!ctrl.$dirty) {
             return;
           }
-          input.siblings(".form-control-feedback").remove();
+          toArray(input[0].parentElement.querySelectorAll(".form-control-feedback")).forEach(function(span) {
+            return span.parentElement.removeChild(span);
+          });
           if (ctrl.$valid) {
             return input.after(feedbackIcon(true));
           } else if (ctrl.$invalid) {
