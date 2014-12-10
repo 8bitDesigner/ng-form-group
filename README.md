@@ -34,11 +34,16 @@ and any fields with the class `form-group` will be automatically validated!
 Now, when your model is invalided, by someone entering an invalid email
 address, the `has-error` class will be added to your form-group.
 
+![Validation in action](./docs/validstates.png)
+
 ## Bonus round: Feedback icons!
 
 Just add the [`.has-feedback`](http://getbootstrap.com/css/#forms-control-validation)
 class to your form group, and we'll automatically add bootstrap style Feedback
 icons to your form fields.
+
+![Validation in action](./docs/iconstates.png)
+
 
 ## Contributing
 
