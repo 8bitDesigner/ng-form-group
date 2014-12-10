@@ -6,54 +6,71 @@ controls are valid or invalid.
  */
 
 (function() {
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
   angular.module('ng-form-group', []).directive("formGroup", function() {
+    var FormGroupController;
     return {
       restrict: 'C',
-      link: function(scope, el, attrs) {
-        var inputs, isConfigured, isDirty, isFocused, isValid, updateClasses;
-        isConfigured = false;
-        inputs = function() {
-          return el.find(".form-control").toArray();
-        };
-        isValid = function(input) {
-          return input.classList.contains('ng-valid');
-        };
-        isDirty = function(input) {
-          return input.classList.contains('ng-dirty');
-        };
-        isFocused = function(input) {
-          return angular.element(input).is(':focus');
-        };
-        updateClasses = function(myInputs) {
-          if (myInputs.length === 0) {
-            return;
-          }
-          el.removeClass('has-error has-success');
-          if (!myInputs.every(isDirty)) {
-            return;
-          }
-          if (myInputs.every(isValid)) {
-            return el.addClass("has-success");
-          } else {
-            return el.addClass("has-error");
-          }
-        };
-        el.on('blur', '.form-control', function() {
-          return updateClasses(inputs());
-        });
-        return scope.$watch(function() {
-          return inputs().map(function(el) {
-            return el.className;
-          }).join(" ");
-        }, function(newval, oldval) {
-          var myInputs;
-          myInputs = inputs();
-          if (myInputs.some(isFocused)) {
+      require: 'formGroup',
+      controller: FormGroupController = (function() {
+        function FormGroupController($scope) {
+          this.$scope = $scope;
+          this.update = __bind(this.update, this);
+          this.unwatchers = [];
+          this.status = null;
+          this.inputs = [];
+          this.$scope.$on('$destroy', (function(_this) {
+            return function() {
+              return _this.unwatchers.each(function(fn) {
+                return fn();
+              });
+            };
+          })(this));
+        }
 
-          } else {
-            return updateClasses(myInputs);
+        FormGroupController.prototype.update = function() {
+          if (!this.inputs.every(function(i) {
+            return i.$dirty;
+          })) {
+            return;
+          }
+          return this.status = this.inputs.every(function(i) {
+            return i.$valid;
+          }) ? 'success' : 'error';
+        };
+
+        FormGroupController.prototype.addInput = function(ctrl) {
+          this.inputs.push(ctrl);
+          return this.unwatchers.push(ctrl.$viewChangeListeners.push(this.update));
+        };
+
+        return FormGroupController;
+
+      })(),
+      link: function(scope, el, attrs, ctrl) {
+        var dereg;
+        dereg = scope.$watch((function() {
+          return ctrl.status;
+        }), function(status) {
+          el.removeClass('has-error has-success');
+          if (status) {
+            return el.addClass("has-" + status);
           }
         });
+        return scope.$on('$destroy', dereg);
+      }
+    };
+  }).directive('formControl', function() {
+    return {
+      restrict: 'C',
+      require: ['?ngModel', '?^formGroup'],
+      link: function(scope, input, attrs, ctrls) {
+        var formGroupCtrl, ngModelCtrl;
+        ngModelCtrl = ctrls[0], formGroupCtrl = ctrls[1];
+        if (ngModelCtrl && formGroupCtrl) {
+          return formGroupCtrl.addInput(ngModelCtrl);
+        }
       }
     };
   });

@@ -2,82 +2,46 @@ describe 'The classy form-group directive', ->
   beforeEach ->
     module('ng-form-group')
 
+  setValid = (inputCtrl, valid = false) ->
+    inputCtrl.$setDirty()
+    inputCtrl.$setValidity('required', valid)
+    inputCtrl.$setViewValue('')
+
   factory = (inner, otherClasses = '') ->
     el = undefined
     inject ($compile, $rootScope) ->
-      el = $compile("<div id='foo' class='form-group #{otherClasses}'>#{inner}</div>")($rootScope)
-      el.find('.form-control').trigger('blur')
+      el = $compile("<form name='formCtrl' class='form-group #{otherClasses}'>#{inner}</form>")($rootScope)
       $rootScope.$digest()
-    return el
+    return [el, el.scope().formCtrl]
 
   it "should set the inital state of the form-group", ->
-    invalid = factory('<input class="form-control ng-dirty ng-invalid">')
-    expect(invalid.hasClass('has-error')).toBe(true)
-    expect(invalid.hasClass('has-success')).toBe(false)
+    [el, ctrl] = factory('<input name="input" ng-model="foo" class="form-control">')
 
-    valid = factory('<input class="form-control ng-dirty ng-valid">')
-    expect(valid.hasClass('has-error')).toBe(false)
-    expect(valid.hasClass('has-success')).toBe(true)
-
-  it "should update when the controls classes change", ->
-    el = factory('<input class="form-control ng-pristine">')
-    expect(el.hasClass('has-error')).toBe(false)
-    expect(el.hasClass('has-success')).toBe(false)
-
-    el.find('.form-control').removeClass('ng-pristine').addClass('ng-dirty ng-invalid')
-    el.scope().$digest()
+    setValid(ctrl.input, false)
 
     expect(el.hasClass('has-error')).toBe(true)
     expect(el.hasClass('has-success')).toBe(false)
 
-    el.find('.form-control').removeClass('ng-invalid').addClass('ng-valid')
-    el.scope().$digest()
+  it "should set the inital state of the form-group, even if invalid", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" class="form-control">')
+
+    setValid(ctrl.input, true)
 
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(true)
 
   it "should only set form-group state if its controls are dirty", ->
-    invalid = factory('<input class="form-control ng-pristine ng-invalid">')
-    expect(invalid.hasClass('has-error')).toBe(false)
-    expect(invalid.hasClass('has-success')).toBe(false)
+    [el, ctrl] = factory('<input name="input" ng-model="foo" class="form-control">')
 
-    valid = factory('<input class="form-control ng-pristine ng-valid">')
-    expect(valid.hasClass('has-error')).toBe(false)
-    expect(valid.hasClass('has-success')).toBe(false)
-
-  it "should need every input to be dirty before adding classes", ->
-    el = factory """
-      <input type="radio" class="form-control ng-dirty ng-invalid">
-      <input type="radio" class="form-control ng-pristine">
-      <input type="radio" class="form-control ng-pristine">
-    """
+    ctrl.input.$setValidity('required', true)
+    ctrl.input.$setDirty(false)
 
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(false)
-
-  it "should only need a single invalid form control to add the error class", ->
-    el = factory """
-      <input type="radio" class="form-control ng-dirty ng-invalid">
-      <input type="radio" class="form-control ng-dirty ng-valid">
-      <input type="radio" class="form-control ng-dirty ng-valid">
-    """
-
-    expect(el.hasClass('has-error')).toBe(true)
-    expect(el.hasClass('has-success')).toBe(false)
-
-
-  it "should only need all valid form controls to add the success class", ->
-    el = factory """
-      <input type="radio" class="form-control ng-dirty ng-valid">
-      <input type="radio" class="form-control ng-dirty ng-valid">
-      <input type="radio" class="form-control ng-dirty ng-valid">
-    """
-
-    expect(el.hasClass('has-error')).toBe(false)
-    expect(el.hasClass('has-success')).toBe(true)
 
   it "shouldn't consider empty form groups valid", ->
-    el = factory('')
+    [el, ctrl] = factory('')
 
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(false)
+

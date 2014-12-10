@@ -3,40 +3,36 @@ Listens to `.form-control`s inside a `.form-group` and updates the
 `.form-group`'s class with `.has-error` or `.has-success` if the matching
 controls are valid or invalid.
 ###
-angular.module('ng-form-group', []).directive "formGroup", ->
+angular.module('ng-form-group', [])
+.directive "formGroup", ->
   restrict: 'C'
-  link: (scope, el, attrs) ->
-    isConfigured = false
-    inputs  = -> el.find(".form-control").toArray()
-    isValid = (input) -> input.classList.contains('ng-valid')
-    isDirty = (input) -> input.classList.contains('ng-dirty')
-    isFocused = (input) -> angular.element(input).is(':focus')
+  require: 'formGroup'
 
-    updateClasses = (myInputs) ->
-      # Bail if we have no inputs
-      return if myInputs.length is 0
+  controller: class FormGroupController
+    constructor: (@$scope) ->
+      @unwatchers = []
+      @status = null
+      @inputs = []
+      @$scope.$on '$destroy', => @unwatchers.each (fn) -> fn()
 
-      # Strip the existing state
+    update: =>
+      return unless @inputs.every (i) -> i.$dirty
+      @status = if (@inputs.every (i) -> i.$valid) then 'success' else 'error'
+
+    addInput: (ctrl) ->
+      @inputs.push(ctrl)
+      @unwatchers.push ctrl.$viewChangeListeners.push @update
+
+  link: (scope, el, attrs, ctrl) ->
+    dereg = scope.$watch (-> ctrl.status), (status) ->
       el.removeClass('has-error has-success')
+      el.addClass("has-#{status}") if status
 
-      # If some inputs in this group are untouched, leave now
-      return unless myInputs.every(isDirty)
+    scope.$on '$destroy', dereg
 
-      # Lastly, if every control is dirty, update our element with the right state
-      if myInputs.every(isValid) then el.addClass("has-success")
-      else                            el.addClass("has-error")
-
-    # Update on blur
-    el.on 'blur', '.form-control', ->
-      updateClasses(inputs())
-
-    # And update when the controller changes and our inputs aren't focused
-    scope.$watch ->
-      inputs().map((el) -> el.className).join(" ")
-    , (newval, oldval) ->
-      myInputs = inputs()
-      if myInputs.some(isFocused)
-        return
-      else
-        updateClasses(myInputs)
-
+.directive 'formControl', ->
+  restrict: 'C'
+  require: ['?ngModel', '?^formGroup']
+  link: (scope, input, attrs, ctrls) ->
+    [ngModelCtrl, formGroupCtrl] = ctrls
+    formGroupCtrl.addInput(ngModelCtrl) if ngModelCtrl and formGroupCtrl
