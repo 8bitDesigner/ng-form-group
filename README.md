@@ -51,5 +51,7 @@ To get your dev environment up and running, run `npm install` and `bower install
 to get the components we need.
 
 Tests are run with `npm run test` and you can build the minified source with
-`npm run build`
+`npm run build`.
 
+Minified, concatenated JS files are created by running `gulp`, which you can
+get by running `npm install -g gulp`.
