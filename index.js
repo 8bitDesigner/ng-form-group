@@ -1,18 +1,16 @@
+(function() {
+  angular.module("ng-form-group", []);
 
-/*
-Listens to `.form-control`s inside a `.form-group` and updates the
-`.form-group`'s class with `.has-error` or `.has-success` if the matching
-controls are valid or invalid.
- */
+}).call(this);
 
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  angular.module('ng-form-group', []).directive("formGroup", function() {
+  angular.module("ng-form-group").directive("formGroup", function() {
     var FormGroupController;
     return {
-      restrict: 'C',
-      require: 'formGroup',
+      restrict: "C",
+      require: "formGroup",
       controller: FormGroupController = (function() {
         function FormGroupController($scope) {
           this.$scope = $scope;
@@ -20,7 +18,7 @@ controls are valid or invalid.
           this.unwatchers = [];
           this.status = null;
           this.inputs = [];
-          this.$scope.$on('$destroy', (function(_this) {
+          this.$scope.$on("$destroy", (function(_this) {
             return function() {
               return _this.unwatchers.each(function(fn) {
                 return fn();
@@ -37,7 +35,7 @@ controls are valid or invalid.
           }
           return this.status = this.inputs.every(function(i) {
             return i.$valid;
-          }) ? 'success' : 'error';
+          }) ? "success" : "error";
         };
 
         FormGroupController.prototype.addInput = function(ctrl) {
@@ -53,7 +51,7 @@ controls are valid or invalid.
         dereg = scope.$watch((function() {
           return ctrl.status;
         }), function(status) {
-          el.removeClass('has-error has-success');
+          el.removeClass("has-error has-success");
           if (status) {
             return el.addClass("has-" + status);
           }
@@ -61,16 +59,57 @@ controls are valid or invalid.
         return scope.$on('$destroy', dereg);
       }
     };
-  }).directive('formControl', function() {
+  }).directive("formControl", function() {
     return {
-      restrict: 'C',
-      require: ['?ngModel', '?^formGroup'],
+      restrict: "C",
+      require: ["?ngModel", "?^formGroup"],
       link: function(scope, input, attrs, ctrls) {
         var formGroupCtrl, ngModelCtrl;
         ngModelCtrl = ctrls[0], formGroupCtrl = ctrls[1];
         if (ngModelCtrl && formGroupCtrl) {
           return formGroupCtrl.addInput(ngModelCtrl);
         }
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+  angular.module("ng-form-group").directive("hasFeedback", function() {
+    return {
+      restrict: "C",
+      compile: function(el, attrs) {
+        return el.find(".form-control").each(function(i, input) {
+          return input.setAttribute("has-feedback-watcher", "");
+        });
+      }
+    };
+  }).directive("hasFeedbackWatcher", function() {
+    return {
+      require: "ngModel",
+      link: function(scope, input, attrs, ctrl) {
+        var dereg, feedbackIcon;
+        feedbackIcon = function(isGood) {
+          var icon;
+          if (isGood == null) {
+            isGood = false;
+          }
+          icon = isGood ? "glyphicon-ok" : "glyphicon-remove";
+          return "<span class=\"glyphicon " + icon + " form-control-feedback\"></span>";
+        };
+        dereg = ctrl.$viewChangeListeners.push(function() {
+          if (!ctrl.$dirty) {
+            return;
+          }
+          input.siblings(".form-control-feedback").remove();
+          if (ctrl.$valid) {
+            return input.after(feedbackIcon(true));
+          } else if (ctrl.$invalid) {
+            return input.after(feedbackIcon(false));
+          }
+        });
+        return scope.$on("$destroy", dereg);
       }
     };
   });

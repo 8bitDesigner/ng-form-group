@@ -4,7 +4,11 @@ var gulp = require('gulp')
   , uglify = require('gulp-uglify')
   , concat = require('gulp-concat')
 
-var files = [ "src/index.coffee" ]
+var files = [
+  "src/index.coffee",
+  "src/form-group.coffee",
+  "src/has-feedback.coffee"
+]
 
 gulp.task('build', function() {
   return gulp.src(files)

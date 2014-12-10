@@ -1,0 +1,32 @@
+describe 'The informative has-feedback directive', ->
+  beforeEach ->
+    module('ng-form-group')
+
+  factory = (inner) ->
+    el = undefined
+    inject ($compile, $rootScope) ->
+      el = $compile("<form name='formCtrl' class='form-group has-feedback'>#{inner}</form>")($rootScope)
+      $rootScope.$digest()
+    return [el, el.scope().formCtrl]
+
+  it "should only add one feedback icon per input", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">')
+    expect(el.find('.form-control-feedback').length).toBe(0)
+
+    ctrl.input.$setViewValue('testing')
+    expect(el.find('.form-control-feedback').length).toBe(1)
+
+  it "should add an 'ok' icon for valid models", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">')
+    ctrl.input.$setViewValue('testing')
+
+    expect(el.find('.glyphicon-ok').length).toBe(1)
+    expect(el.find('.glyphicon-remove').length).toBe(0)
+
+  it "should add a 'remove' icon for invalid models", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">')
+    ctrl.input.$setViewValue('1000')
+    ctrl.input.$setViewValue('')
+
+    expect(el.find('.glyphicon-ok').length).toBe(0)
+    expect(el.find('.glyphicon-remove').length).toBe(1)

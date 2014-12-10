@@ -6,7 +6,10 @@ module.exports = function(config) {
       "bower_components/angular/angular.js",
       "bower_components/angular-mocks/angular-mocks.js",
       "src/index.coffee",
-      "tests/index.coffee"
+      "src/has-feedback.coffee",
+      "src/form-group.coffee",
+      "tests/has-feedback.coffee",
+      "tests/form-group.coffee",
     ],
     preprocessors: {
       "src/*.coffee": "coffee",
