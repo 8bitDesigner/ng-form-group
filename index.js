@@ -29,9 +29,10 @@
       })) {
         return;
       }
-      return this.status = this.inputs.every(function(i) {
+      this.status = this.inputs.every(function(i) {
         return i.$valid;
       }) ? "success" : "error";
+      return this.$scope.$digest();
     };
 
     FormGroupController.prototype.addInput = function(ctrl) {
