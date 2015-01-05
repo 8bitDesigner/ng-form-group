@@ -32,7 +32,9 @@
       this.status = this.inputs.every(function(i) {
         return i.$valid;
       }) ? "success" : "error";
-      return this.$scope.$digest();
+      if (!this.$scope.$$phase) {
+        return this.$scope.$digest();
+      }
     };
 
     FormGroupController.prototype.addInput = function(ctrl) {

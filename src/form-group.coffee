@@ -8,7 +8,8 @@ class FormGroupController
   update: =>
     return unless @inputs.every (i) -> i.$dirty
     @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
-    @$scope.$digest()
+
+    @$scope.$digest() unless @$scope.$$phase
 
   addInput: (ctrl) ->
     @inputs.push(ctrl)
