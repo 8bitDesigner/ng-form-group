@@ -1,19 +1,18 @@
 class FormGroupController
   constructor: (@$scope) ->
-    @unwatchers = []
     @status = null
     @inputs = []
-    @$scope.$on "$destroy", => @unwatchers.each (fn) -> fn()
+
+    unref = @$scope.$watch(@update)
+    @$scope.$on "$destroy", unref
 
   update: =>
     return unless @inputs.every (i) -> i.$dirty
     @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
-
     @$scope.$digest() unless @$scope.$$phase
 
   addInput: (ctrl) ->
     @inputs.push(ctrl)
-    @unwatchers.push ctrl.$viewChangeListeners.push @update
 
 
 angular.module("ng-form-group")

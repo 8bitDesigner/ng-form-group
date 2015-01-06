@@ -15,7 +15,7 @@ angular.module("ng-form-group")
       icon = if isGood then "glyphicon-ok" else "glyphicon-remove"
       "<span class=\"glyphicon #{icon} form-control-feedback\"></span>"
 
-    dereg = ctrl.$viewChangeListeners.push ->
+    unref = scope.$watch ->
       return unless ctrl.$dirty
 
       # Strip the existing state
@@ -26,5 +26,5 @@ angular.module("ng-form-group")
       if ctrl.$valid        then input.after(feedbackIcon(true))
       else if ctrl.$invalid then input.after(feedbackIcon(false))
 
-    scope.$on "$destroy", dereg
+    scope.$on "$destroy", unref
 
