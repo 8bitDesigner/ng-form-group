@@ -9,18 +9,13 @@
 
   FormGroupController = (function() {
     function FormGroupController($scope) {
+      var unref;
       this.$scope = $scope;
       this.update = __bind(this.update, this);
-      this.unwatchers = [];
       this.status = null;
       this.inputs = [];
-      this.$scope.$on("$destroy", (function(_this) {
-        return function() {
-          return _this.unwatchers.each(function(fn) {
-            return fn();
-          });
-        };
-      })(this));
+      unref = this.$scope.$watch(this.update);
+      this.$scope.$on("$destroy", unref);
     }
 
     FormGroupController.prototype.update = function() {
@@ -38,8 +33,7 @@
     };
 
     FormGroupController.prototype.addInput = function(ctrl) {
-      this.inputs.push(ctrl);
-      return this.unwatchers.push(ctrl.$viewChangeListeners.push(this.update));
+      return this.inputs.push(ctrl);
     };
 
     return FormGroupController;
@@ -100,7 +94,7 @@
     return {
       require: "ngModel",
       link: function(scope, input, attrs, ctrl) {
-        var dereg, feedbackIcon;
+        var feedbackIcon, unref;
         feedbackIcon = function(isGood) {
           var icon;
           if (isGood == null) {
@@ -109,7 +103,7 @@
           icon = isGood ? "glyphicon-ok" : "glyphicon-remove";
           return "<span class=\"glyphicon " + icon + " form-control-feedback\"></span>";
         };
-        dereg = ctrl.$viewChangeListeners.push(function() {
+        unref = scope.$watch(function() {
           if (!ctrl.$dirty) {
             return;
           }
@@ -122,7 +116,7 @@
             return input.after(feedbackIcon(false));
           }
         });
-        return scope.$on("$destroy", dereg);
+        return scope.$on("$destroy", unref);
       }
     };
   });
