@@ -4,6 +4,9 @@
   "description": "Automatic Bootstrap validation based on ngModel",
   "main": "index.min.js",
   "scripts": {
+    "release:major": "node ./bin/release.js major",
+    "release:minor": "node ./bin/release.js minor",
+    "release:patch": "node ./bin/release.js patch",
     "build": "gulp",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "watch": "./node_modules/karma/bin/karma start karma.watch.js"
@@ -20,6 +23,7 @@
     "karma": "0.12.16",
     "karma-coffee-preprocessor": "0.2.1",
     "karma-jasmine": "0.1.5",
-    "karma-phantomjs-launcher": "0.1.4"
+    "karma-phantomjs-launcher": "0.1.4",
+    "semver": "^4.2.0"
   }
 }

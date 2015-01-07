@@ -26,7 +26,7 @@ and any fields with the class `form-group` will be automatically validated!
 <form role="form">
   <div class="form-group">
     <label for="myEmail">Email address</label>
-    <input type="email"  ng-model="myEmailModel" class="form-control" id="myEmail">
+    <input type="email" ng-model="myEmailModel" class="form-control" id="myEmail">
   </div>
 </form>
 ```
@@ -53,5 +53,9 @@ to get the components we need.
 Tests are run with `npm run test` and you can build the minified source with
 `npm run build`.
 
-Minified, concatenated JS files are created by running `gulp`, which you can
-get by running `npm install -g gulp`.
+Releases are built using `npm run release:[type]`. So, to generate a new patch
+release, run `npm run release:patch`. This script will:
+
+* Generate minified, concatenated JS files,
+* Increment the version in `package.json` and `bower.json`
+* Tag a new release
