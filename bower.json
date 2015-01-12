@@ -1,7 +1,7 @@
 {
   "name": "ng-form-group",
   "main": "index.min.js",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "authors": [
     "Paul Sweeney <paul@fullscreen.net>"
   ],

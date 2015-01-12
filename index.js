@@ -13,6 +13,7 @@
       this.$scope = $scope;
       this.update = __bind(this.update, this);
       this.status = null;
+      this.disabled = false;
       this.inputs = [];
       unref = this.$scope.$watch(this.update);
       this.$scope.$on("$destroy", unref);
@@ -47,6 +48,10 @@
       controller: 'FormGroupController',
       link: function(scope, el, attrs, ctrl) {
         var dereg;
+        if (el.hasClass('form-group-without-feedback')) {
+          ctrl.disabled = true;
+          return;
+        }
         dereg = scope.$watch((function() {
           return ctrl.status;
         }), function(status) {
@@ -65,6 +70,9 @@
       link: function(scope, input, attrs, ctrls) {
         var formGroupCtrl, ngModelCtrl;
         ngModelCtrl = ctrls[0], formGroupCtrl = ctrls[1];
+        if (formGroupCtrl.disabled) {
+          return;
+        }
         if (ngModelCtrl && formGroupCtrl) {
           return formGroupCtrl.addInput(ngModelCtrl);
         }
