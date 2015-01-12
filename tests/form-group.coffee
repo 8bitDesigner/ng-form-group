@@ -41,3 +41,19 @@ describe 'The classy form-group directive', ->
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(true)
 
+  it "should bypass elements with the class `form-group-without-feedback`", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">', 'form-group-without-feedback')
+
+    expect(el.hasClass('has-error')).toBe(false)
+    expect(el.hasClass('has-success')).toBe(false)
+
+    ctrl.input.$setViewValue('oh hai')
+
+    expect(el.hasClass('has-error')).toBe(false)
+    expect(el.hasClass('has-success')).toBe(false)
+
+    ctrl.input.$setViewValue('')
+
+    expect(el.hasClass('has-error')).toBe(false)
+    expect(el.hasClass('has-success')).toBe(false)
+

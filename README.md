@@ -36,6 +36,19 @@ address, the `has-error` class will be added to your form-group.
 
 ![Validation in action](./docs/validstates.png)
 
+If you want to disable feedback for a specific form, add the `form-group-without-feedback`
+class to the form-group:
+
+``` html
+<form role="form">
+  <div class="form-group form-group-without-feedback">
+    <label for="search">Search for things:</label>
+    <input type="search" ng-model="searchQuery" class="form-control" id="search">
+  </div>
+</form>
+```
+
+
 ## Bonus round: Feedback icons!
 
 Just add the [`.has-feedback`](http://getbootstrap.com/css/#forms-control-validation)

@@ -1,6 +1,7 @@
 class FormGroupController
   constructor: (@$scope) ->
     @status = null
+    @disabled = false
     @inputs = []
 
     unref = @$scope.$watch(@update)
@@ -24,6 +25,10 @@ angular.module("ng-form-group")
   require: "formGroup"
   controller: 'FormGroupController'
   link: (scope, el, attrs, ctrl) ->
+    if el.hasClass('form-group-without-feedback')
+      ctrl.disabled = true
+      return
+
     dereg = scope.$watch (-> ctrl.status), (status) ->
       el.removeClass("has-error has-success")
       el.addClass("has-#{status}") if status
@@ -35,5 +40,6 @@ angular.module("ng-form-group")
   require: ["?ngModel", "?^formGroup"]
   link: (scope, input, attrs, ctrls) ->
     [ngModelCtrl, formGroupCtrl] = ctrls
+    return if formGroupCtrl.disabled
     formGroupCtrl.addInput(ngModelCtrl) if ngModelCtrl and formGroupCtrl
 
