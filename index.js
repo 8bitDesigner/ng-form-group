@@ -20,6 +20,7 @@
     }
 
     FormGroupController.prototype.update = function() {
+      this.status = null;
       if (!this.inputs.every(function(i) {
         return i.$dirty;
       })) {
