@@ -8,6 +8,7 @@ class FormGroupController
     @$scope.$on "$destroy", unref
 
   update: =>
+    @status = null
     return unless @inputs.every (i) -> i.$dirty
     @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
     @$scope.$digest() unless @$scope.$$phase
