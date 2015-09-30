@@ -57,3 +57,7 @@ describe 'The classy form-group directive', ->
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(false)
 
+  it "shouldn't throw an error if no form group controller is present", ->
+    inject ($compile, $rootScope) ->
+      el = $compile('<input name="input" ng-model="foo" required class="form-control">')($rootScope)
+      $rootScope.$digest()

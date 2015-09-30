@@ -41,6 +41,6 @@ angular.module("ng-form-group")
   require: ["?ngModel", "?^formGroup"]
   link: (scope, input, attrs, ctrls) ->
     [ngModelCtrl, formGroupCtrl] = ctrls
-    return if formGroupCtrl.disabled
+    return if not formGroupCtrl or formGroupCtrl.disabled
     formGroupCtrl.addInput(ngModelCtrl) if ngModelCtrl and formGroupCtrl
 

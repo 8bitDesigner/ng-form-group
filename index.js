@@ -71,7 +71,7 @@
       link: function(scope, input, attrs, ctrls) {
         var formGroupCtrl, ngModelCtrl;
         ngModelCtrl = ctrls[0], formGroupCtrl = ctrls[1];
-        if (formGroupCtrl.disabled) {
+        if (!formGroupCtrl || formGroupCtrl.disabled) {
           return;
         }
         if (ngModelCtrl && formGroupCtrl) {
