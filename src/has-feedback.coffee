@@ -11,9 +11,15 @@ angular.module("ng-form-group")
 .directive "hasFeedbackWatcher", ->
   require: "ngModel",
   link: (scope, input, attrs, ctrl) ->
+
+    validIcon = attrs.validIcon || "glyphicon-ok"
+    invalidIcon = attrs.invalidIcon || "glyphicon-remove"
+    feedbackTemplate = attrs.feedbackTemplate || "<span class=\"glyphicon {{feedbackIcon}} form-control-feedback\"></span>";
+
+
     feedbackIcon = (isGood = false) ->
       icon = if isGood then "glyphicon-ok" else "glyphicon-remove"
-      "<span class=\"glyphicon #{icon} form-control-feedback\"></span>"
+      feedbackTemplate.replace /{{feedbackIcon}}/, icon
 
     unref = scope.$watch ->
       return unless ctrl.$dirty
