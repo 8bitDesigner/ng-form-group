@@ -15,7 +15,6 @@ angular.module("ng-form-group")
     validIcon = attrs.validIcon || "glyphicon-ok"
     invalidIcon = attrs.invalidIcon || "glyphicon-remove"
     feedbackTemplate = $templateCache.get(attrs.feedbackTemplate) || "<span class=\"glyphicon {{feedbackIcon}} form-control-feedback\"></span>";
-    console.log feedbackTemplate
 
     feedbackIcon = (isGood = false) ->
       icon = if isGood then validIcon else invalidIcon
