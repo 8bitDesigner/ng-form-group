@@ -36,3 +36,25 @@ describe 'The informative has-feedback directive', ->
 
     expect(find(el, '.glyphicon-ok').length).toBe(0)
     expect(find(el, '.glyphicon-remove').length).toBe(1)
+
+  it "should allow the use of custom feedback icons", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control" valid-icon="ohai" invalid-icon="kbai">')
+    ctrl.input.$setViewValue('1000')
+    ctrl.input.$setViewValue('')
+
+    expect(find(el, '.glyphicon-ok').length).toBe(0)
+    expect(find(el, '.glyphicon-remove').length).toBe(0)
+    expect(find(el, '.kbai').length).toBe(1)
+
+  it "should allow the use of custom feedback templates", ->
+    inject ($templateCache) ->
+      $templateCache.put 'custom-feedback.html', '<div class="form-control-feedback custom-feedback"></div>'
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control" valid-icon="ohai" invalid-icon="kbai" feedback-template="custom-feedback.html">')
+
+    # [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control" feedback-template="custom-feedback.html"/>')
+    ctrl.input.$setViewValue('1000')
+    ctrl.input.$setViewValue('')
+
+    expect(find(el, '.custom-feedback').length).toBe(1)
+    expect(find(el, '.glyphicon-ok').length).toBe(0)
+    expect(find(el, '.glyphicon-remove').length).toBe(0)
