@@ -57,6 +57,16 @@ icons to your form fields.
 
 ![Validation in action](./docs/iconstates.png)
 
+## Bonus bonus round: custom feedback icons!
+
+`feedback-template` will look for a template in cache to use instead of the default one. 
+*note:* this template needs to have a css class of `form-control-feedback` or
+you will get strange behavior.
+
+`valid-icon` will use this instead of the default `glyphicon-ok` when valid
+
+`invalid-icon` will use this instead of the default `glyphicon-remove` when invalid
+
 
 ## Contributing
 
