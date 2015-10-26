@@ -22,7 +22,7 @@
     FormGroupController.prototype.update = function() {
       this.status = null;
       if (!this.inputs.every(function(i) {
-        return i.$dirty;
+        return i.$dirty && !i.$pending;
       })) {
         return;
       }
@@ -113,12 +113,12 @@
           return "<span class=\"glyphicon " + icon + " form-control-feedback\"></span>";
         };
         unref = scope.$watch(function() {
-          if (!ctrl.$dirty) {
-            return;
-          }
           toArray(input[0].parentElement.querySelectorAll(".form-control-feedback")).forEach(function(span) {
             return span.parentElement.removeChild(span);
           });
+          if (!ctrl.$dirty) {
+            return;
+          }
           if (ctrl.$valid) {
             return input.after(feedbackIcon(true));
           } else if (ctrl.$invalid) {

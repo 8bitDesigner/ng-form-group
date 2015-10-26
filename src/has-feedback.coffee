@@ -16,11 +16,11 @@ angular.module("ng-form-group")
       "<span class=\"glyphicon #{icon} form-control-feedback\"></span>"
 
     unref = scope.$watch ->
-      return unless ctrl.$dirty
-
       # Strip the existing state
       toArray(input[0].parentElement.querySelectorAll(".form-control-feedback")).forEach (span) ->
         span.parentElement.removeChild(span)
+
+      return unless ctrl.$dirty
 
       # Add any relevant icons
       if ctrl.$valid        then input.after(feedbackIcon(true))

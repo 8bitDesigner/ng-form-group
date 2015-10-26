@@ -9,7 +9,7 @@ class FormGroupController
 
   update: =>
     @status = null
-    return unless @inputs.every (i) -> i.$dirty
+    return unless @inputs.every (i) -> i.$dirty and not i.$pending
     @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
     @$scope.$digest() unless @$scope.$$phase
 

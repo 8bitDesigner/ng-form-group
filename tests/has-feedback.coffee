@@ -36,3 +36,13 @@ describe 'The informative has-feedback directive', ->
 
     expect(find(el, '.glyphicon-ok').length).toBe(0)
     expect(find(el, '.glyphicon-remove').length).toBe(1)
+
+  it "should handle being `$setPristine`d", ->
+    [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">')
+    ctrl.input.$setViewValue('1000')
+
+    expect(find(el, '.form-control-feedback').length).toBe(1)
+
+    ctrl.input.$setPristine()
+
+    expect(find(el, '.form-control-feedback').length).toBe(1)
