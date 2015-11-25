@@ -49,7 +49,7 @@
       controller: 'FormGroupController',
       link: function(scope, el, attrs, ctrl) {
         var dereg;
-        if (el.hasClass('form-group-without-feedback')) {
+        if (el.hasClass('form-group-without-feedback') || ctrl.inputs.length === 0) {
           ctrl.disabled = true;
           return;
         }

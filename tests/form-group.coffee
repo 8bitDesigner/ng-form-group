@@ -61,3 +61,17 @@ describe 'The classy form-group directive', ->
     inject ($compile, $rootScope) ->
       el = $compile('<input name="input" ng-model="foo" required class="form-control">')($rootScope)
       $rootScope.$digest()
+
+  it "shouldn't highlight labels in a form-group without form-contols", ->
+    [el, ctrl] = factory("""
+      <label class="control-label">Hai</label>
+      <input name="input" ng-model="foo" min-length=2>
+    """)
+
+    expect(el.hasClass('has-error')).toBe(false)
+    expect(el.hasClass('has-success')).toBe(false)
+
+    ctrl.input.$setViewValue('oh hai')
+
+    expect(el.hasClass('has-error')).toBe(false)
+    expect(el.hasClass('has-success')).toBe(false)
