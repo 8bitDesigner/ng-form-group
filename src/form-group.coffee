@@ -26,7 +26,7 @@ angular.module("ng-form-group")
   require: "formGroup"
   controller: 'FormGroupController'
   link: (scope, el, attrs, ctrl) ->
-    if el.hasClass('form-group-without-feedback')
+    if el.hasClass('form-group-without-feedback') or ctrl.inputs.length is 0
       ctrl.disabled = true
       return
 
