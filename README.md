@@ -4,11 +4,12 @@
 
 ## Installation
 
-In your Angular project, run `bower install --save ng-form-group` to save the
-module. Then, in your HTML, add:
+In your Angular project, run `npm install --save ng-form-group` if you're 
+using npm, or `bower install --save ng-form-group` to save the module.
+Then, in your HTML, add:
 
 ``` html
-<script src="/path/to/bower_components/ng-form-group/index.min.js"></script>
+<script src="/path/to/assets/ng-form-group/index.min.js"></script>
 ```
 
 And lastly, in your Angular module, include `ng-form-group` as a dependency:
