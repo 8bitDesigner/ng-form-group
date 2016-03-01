@@ -41,6 +41,21 @@ describe 'The classy form-group directive', ->
     expect(el.hasClass('has-error')).toBe(false)
     expect(el.hasClass('has-success')).toBe(true)
 
+  it "should apply classes when the form is submitted - even if pristine", ->
+    scope = undefined;
+    inject ($rootScope) -> scope = $rootScope
+
+    [el, ctrl] = factory """
+        <input name="aInput" ng-model="foo" required class="form-control">
+        <input name="bInput" ng-model="bar" required class="form-control">
+    """
+
+    ctrl.$setSubmitted();
+    scope.$digest();
+
+    expect(el.hasClass('has-error')).toBe(true)
+    expect(el.hasClass('has-success')).toBe(false)
+
   it "should bypass elements with the class `form-group-without-feedback`", ->
     [el, ctrl] = factory('<input name="input" ng-model="foo" required class="form-control">', 'form-group-without-feedback')
 
