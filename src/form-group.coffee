@@ -7,11 +7,22 @@ class FormGroupController
     unref = @$scope.$watch(@update)
     @$scope.$on "$destroy", unref
 
+  setParentForm: (ctrl) ->
+    @ngFormCtrl = ctrl
+
+  canValidate: ->
+    inputsReady = @inputs.every (i) -> (i.$dirty and not i.$pending)
+
+    if @ngFormCtrl
+      @ngFormCtrl.$submitted or inputsReady
+    else
+      inputsReady
+
   update: =>
-    @status = null
-    return unless @inputs.every (i) -> (i.$dirty and not i.$pending) or i.$$parentForm.$submitted
-    @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
-    @$scope.$digest() unless @$scope.$$phase
+    if @canValidate()
+      @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
+    else
+      @status = null
 
   addInput: (ctrl) ->
     @inputs.push(ctrl)
@@ -23,12 +34,17 @@ angular.module("ng-form-group")
 
 .directive "formGroup", ->
   restrict: "C"
-  require: "formGroup"
+  require: ["formGroup", "?^form"]
   controller: 'FormGroupController'
-  link: (scope, el, attrs, ctrl) ->
+  link: (scope, el, attrs, ctrls) ->
+    [ctrl, ngFormCtrl] = ctrls
+
     if el.hasClass('form-group-without-feedback') or ctrl.inputs.length is 0
       ctrl.disabled = true
       return
+
+    if ngFormCtrl
+      ctrl.setParentForm(ngFormCtrl)
 
     dereg = scope.$watch (-> ctrl.status), (status) ->
       el.removeClass("has-error has-success")
