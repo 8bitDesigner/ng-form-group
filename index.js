@@ -5,13 +5,13 @@
 
 (function() {
   var FormGroupController,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   FormGroupController = (function() {
     function FormGroupController($scope) {
       var unref;
       this.$scope = $scope;
-      this.update = __bind(this.update, this);
+      this.update = bind(this.update, this);
       this.status = null;
       this.disabled = false;
       this.inputs = [];
@@ -19,18 +19,29 @@
       this.$scope.$on("$destroy", unref);
     }
 
-    FormGroupController.prototype.update = function() {
-      this.status = null;
-      if (!this.inputs.every(function(i) {
-        return (i.$dirty && !i.$pending) || i.$$parentForm.$submitted;
-      })) {
-        return;
+    FormGroupController.prototype.setParentForm = function(ctrl) {
+      return this.ngFormCtrl = ctrl;
+    };
+
+    FormGroupController.prototype.canValidate = function() {
+      var inputsReady;
+      inputsReady = this.inputs.every(function(i) {
+        return i.$dirty && !i.$pending;
+      });
+      if (this.ngFormCtrl) {
+        return this.ngFormCtrl.$submitted || inputsReady;
+      } else {
+        return inputsReady;
       }
-      this.status = this.inputs.every(function(i) {
-        return i.$valid;
-      }) ? "success" : "error";
-      if (!this.$scope.$$phase) {
-        return this.$scope.$digest();
+    };
+
+    FormGroupController.prototype.update = function() {
+      if (this.canValidate()) {
+        return this.status = this.inputs.every(function(i) {
+          return i.$valid;
+        }) ? "success" : "error";
+      } else {
+        return this.status = null;
       }
     };
 
@@ -45,13 +56,17 @@
   angular.module("ng-form-group").controller('FormGroupController', ['$scope', FormGroupController]).directive("formGroup", function() {
     return {
       restrict: "C",
-      require: "formGroup",
+      require: ["formGroup", "?^form"],
       controller: 'FormGroupController',
-      link: function(scope, el, attrs, ctrl) {
-        var dereg;
+      link: function(scope, el, attrs, ctrls) {
+        var ctrl, dereg, ngFormCtrl;
+        ctrl = ctrls[0], ngFormCtrl = ctrls[1];
         if (el.hasClass('form-group-without-feedback') || ctrl.inputs.length === 0) {
           ctrl.disabled = true;
           return;
+        }
+        if (ngFormCtrl) {
+          ctrl.setParentForm(ngFormCtrl);
         }
         dereg = scope.$watch((function() {
           return ctrl.status;
