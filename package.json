@@ -14,6 +14,9 @@
   "author": "Paul Sweeney <paul@fullscreen.net>",
   "license": "MIT",
   "dependencies": {
+    "angular": "^1.2.0"
+  },
+  "devDependencies": {
     "coffee-script": "1.7.1",
     "gulp": "^3.8.7",
     "gulp-coffee": "^2.1.1",
