@@ -1,6 +1,6 @@
 {
   "name": "ng-form-group",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Automatic Bootstrap validation based on ngModel",
   "main": "index.min.js",
   "scripts": {
