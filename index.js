@@ -9,14 +9,12 @@
 
   FormGroupController = (function() {
     function FormGroupController($scope) {
-      var unref;
       this.$scope = $scope;
       this.update = bind(this.update, this);
       this.status = null;
       this.disabled = false;
       this.inputs = [];
-      unref = this.$scope.$watch(this.update);
-      this.$scope.$on("$destroy", unref);
+      this.$scope.$watch(this.update);
     }
 
     FormGroupController.prototype.setParentForm = function(ctrl) {
@@ -36,10 +34,10 @@
     };
 
     FormGroupController.prototype.update = function() {
-      if (this.canValidate()) {
-        return this.status = this.inputs.every(function(i) {
+      if (this.disabled === false && this.canValidate()) {
+        return this.status = (this.inputs.every(function(i) {
           return i.$valid;
-        }) ? "success" : "error";
+        })) ? "success" : "error";
       } else {
         return this.status = null;
       }
@@ -59,16 +57,21 @@
       require: ["formGroup", "?^form"],
       controller: 'FormGroupController',
       link: function(scope, el, attrs, ctrls) {
-        var ctrl, dereg, ngFormCtrl;
+        var ctrl, ngFormCtrl;
         ctrl = ctrls[0], ngFormCtrl = ctrls[1];
-        if (el.hasClass('form-group-without-feedback') || ctrl.inputs.length === 0) {
+        if (ctrl.inputs.length === 0) {
           ctrl.disabled = true;
           return;
         }
         if (ngFormCtrl) {
           ctrl.setParentForm(ngFormCtrl);
         }
-        dereg = scope.$watch((function() {
+        scope.$watch((function() {
+          return el.hasClass('form-group-without-feedback');
+        }), function(value) {
+          return ctrl.disabled = value;
+        });
+        return scope.$watch((function() {
           return ctrl.status;
         }), function(status) {
           el.removeClass("has-error has-success");
@@ -76,7 +79,6 @@
             return el.addClass("has-" + status);
           }
         });
-        return scope.$on('$destroy', dereg);
       }
     };
   }).directive("formControl", function() {

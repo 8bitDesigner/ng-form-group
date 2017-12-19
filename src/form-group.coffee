@@ -3,9 +3,7 @@ class FormGroupController
     @status = null
     @disabled = false
     @inputs = []
-
-    unref = @$scope.$watch(@update)
-    @$scope.$on "$destroy", unref
+    @$scope.$watch(@update)
 
   setParentForm: (ctrl) ->
     @ngFormCtrl = ctrl
@@ -19,7 +17,7 @@ class FormGroupController
       inputsReady
 
   update: =>
-    if @canValidate()
+    if @disabled is false and @canValidate()
       @status = if (@inputs.every (i) -> i.$valid) then "success" else "error"
     else
       @status = null
@@ -39,18 +37,19 @@ angular.module("ng-form-group")
   link: (scope, el, attrs, ctrls) ->
     [ctrl, ngFormCtrl] = ctrls
 
-    if el.hasClass('form-group-without-feedback') or ctrl.inputs.length is 0
+    if ctrl.inputs.length is 0
       ctrl.disabled = true
       return
 
     if ngFormCtrl
       ctrl.setParentForm(ngFormCtrl)
 
-    dereg = scope.$watch (-> ctrl.status), (status) ->
+    scope.$watch (() -> el.hasClass('form-group-without-feedback')), (value) ->
+      ctrl.disabled = value
+
+    scope.$watch (-> ctrl.status), (status) ->
       el.removeClass("has-error has-success")
       el.addClass("has-#{status}") if status
-
-    scope.$on '$destroy', dereg
 
 .directive "formControl", ->
   restrict: "C"
