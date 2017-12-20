@@ -6,7 +6,7 @@ describe 'The informative has-feedback directive', ->
     toArray el[0].querySelectorAll(target)
 
   beforeEach ->
-    module('ng-form-group')
+    angular.mock.module('ng-form-group')
 
   factory = (inner) ->
     el = undefined
