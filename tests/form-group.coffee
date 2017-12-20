@@ -1,6 +1,6 @@
 describe 'The classy form-group directive', ->
   beforeEach ->
-    module('ng-form-group')
+    angular.mock.module('ng-form-group')
 
   factory = (inner, otherClasses = '') ->
     el = undefined
